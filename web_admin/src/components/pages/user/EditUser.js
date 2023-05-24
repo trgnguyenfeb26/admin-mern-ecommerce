@@ -11,18 +11,15 @@ import { editUser, updateUser } from '../../../redux/actions/userActions';
 import { ToastObjects } from '../../../redux/actions/toastObject';
 import { USER_UPDATE_RESET } from '../../../redux/constants/UserConstants';
 import { Link } from 'react-router-dom';
-import FileBase64 from 'react-file-base64';
 
 
 const EditUser = ({ match }) => {
 
 	const userId = match.params.id;
-	console.log(userId);
 	const [submitted, setSubmitted] = useState(false);
 	const dispatch = useDispatch();
 	const userEdit = useSelector((state) => state.userEdit);
 	const { loading, error, user } = userEdit;
-	console.log(userEdit);
 	const userUpdate = useSelector((state) => state.userUpdate);
 	const { loading: loadingUpdate, error: errorUpdate, success: successUpdate } = userUpdate;
 	const userLogin = useSelector((state) => state.userLogin);
@@ -34,7 +31,6 @@ const EditUser = ({ match }) => {
 	const [userState, setUserState] = useState(userInfo);
 	const [name, setName] = useState('');
 	const [lastname, setLastname] = useState('');
-	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [img, setImg] = useState('');
@@ -42,6 +38,7 @@ const EditUser = ({ match }) => {
 
 
 	useEffect(() => {
+		setFormState({ values: {} });
 		if (successUpdate) {
 			dispatch({ type: USER_UPDATE_RESET });
 			toast.success('Update user successfully!', ToastObjects);
@@ -49,9 +46,9 @@ const EditUser = ({ match }) => {
 		if (!user || user._id !== userId) {
 			dispatch(editUser(userId));
 		} else {
-			setFormState((formState) => ({
+			setFormState({
 				values: user
-			}));
+			});
 		}
 	}, [dispatch, user, userId, successUpdate]);
 
@@ -74,12 +71,11 @@ const EditUser = ({ match }) => {
 	const submitHandler = (e) => {
 		e.preventDefault();
 		setSubmitted(true);
-		let { name, lastname, username, email, isAdmin, img } = formState.values;
-		if (name && lastname && username && email) {
-			dispatch(updateUser({ _id: userId, name, lastname, username, email, isAdmin, img }));
+		let { name, lastname, email, isAdmin, img } = formState.values;
+		if (name && lastname && email) {
+			dispatch(updateUser({ _id: userId, name, lastname, email, isAdmin, img }));
 			setFormState({ values: {} });
 			setSubmitted(false);
-			setFormState({ values: {} });
 		}
 		else {
 			toast.error('Please fill all fields!', ToastObjects);
@@ -118,7 +114,7 @@ const EditUser = ({ match }) => {
 			return Promise.reject(error);
 		}
 	);
-	console.log('values', formState.values)
+	console.log('user', formState.values)
 
 	//uploadFileHandler
 	const uploadFileHandler = async (e) => {
@@ -148,7 +144,7 @@ const EditUser = ({ match }) => {
 													<div className="col-md-6">
 														<div className="form-group">
 															<label htmlFor="name">First Name</label>
-															<input type="text" className="form-control" id="name" placeholder="Name" value={formState.values.name} onChange={handleChange} />
+															<input type="text" className="form-control" id="name" placeholder="Name" value={formState.values?.name} onChange={handleChange} />
 															{submitted && !formState.values.name &&
 																<div className="text-danger">Name is required</div>
 															}
@@ -157,7 +153,7 @@ const EditUser = ({ match }) => {
 													<div className="col-md-6">
 														<div className="form-group">
 															<label htmlFor="lastname">Last Name</label>
-															<input type="text" className="form-control" id="lastname" placeholder="Last Name" value={formState.values.lastname} onChange={handleChange} />
+															<input type="text" className="form-control" id="lastname" placeholder="Last Name" value={formState.values?.lastname} onChange={handleChange} />
 															{submitted && !formState.values.lastname &&
 																<div className="text-danger">Lastname is required</div>
 															}
@@ -167,17 +163,8 @@ const EditUser = ({ match }) => {
 												<div className="row">
 													<div className="col-md-6">
 														<div className="form-group">
-															<label htmlFor="username">Username</label>
-															<input type="text" className="form-control" id="username" placeholder="Username" value={formState.values.username} onChange={handleChange} />
-															{submitted && !formState.values.username &&
-																<div className="text-danger">Username is required</div>
-															}
-														</div>
-													</div>
-													<div className="col-md-6">
-														<div className="form-group">
 															<label htmlFor="email">Email address</label>
-															<input type="email" className="form-control" id="email" placeholder="Email" value={formState.values.email} onChange={handleChange} />
+															<input type="email" className="form-control" id="email" placeholder="Email" value={formState.values?.email} readOnly/>
 															{submitted && !formState.values.email &&
 																<div className="text-danger">Email is required</div>
 															}
@@ -191,13 +178,13 @@ const EditUser = ({ match }) => {
 															
 															{/* <input type="text" className="form-control" id="img" placeholder="Image" src={formState.values.img} onChange={handleChange} /> */}
 															
-															<img className="activator" style={{ width: '100%', height: 100, width: 100 }} src={formState.values.img} />
+															<img className="activator" style={{ width: '100%', height: 100, width: 100 }} src={formState.values?.img} />
 														</div>
 													</div>
 													<div className="col-md-6">
 														<div className="form-group">
 															<label htmlFor="isAdmin">Is Admin</label>
-															<select className="form-control" id="isAdmin" checked={formState.values.isAdmin} onChange={handleChange} >
+															<select className="form-control" id="isAdmin" checked={formState.values?.isAdmin} onChange={handleChange} >
 																<option value="true">True</option>
 																<option value="false">False</option>
 															</select>
@@ -207,14 +194,11 @@ const EditUser = ({ match }) => {
 												<div className="row">
 													<div className="col-md-6">
 														<div className="form-group">
-															{/* <label htmlFor="imgFile">Image File</label> */}
-															{/* <input type="file" className="form-control" id="imgFile" onChange={uploadFileHandler} /> */}
-															{/* {uploading && <LoadingBox />} */}
-															<FileBase64
-																type="file"
-																multiple={false}
-																onDone={({ base64 }) => setFormState({ ...formState, values: { ...formState.values.img, img: base64 } })}
-															/>
+														<input type="file"  accept="image/jpeg" className={'form-control form-control-lg' + (submitted && !formState.values.img ? ' is-invalid' : '')}	
+																	id="img"
+																	onChange={handleChange}
+																	//svalue={formState.values.img || ''}
+																/>
 														</div>
 													</div>
 												</div>

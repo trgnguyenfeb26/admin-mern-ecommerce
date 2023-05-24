@@ -18,7 +18,6 @@ const AddUser = () => {
 	const dispatch = useDispatch();
 	const [name, setName] = useState('');
 	const [lastname, setLastname] = useState('');
-	const [username, setUsername] = useState('');
 	const [email, setEmail] = useState('');
 	const [isAdmin, setIsAdmin] = useState(false);
 	const [password, setPassword] = useState('');
@@ -33,48 +32,25 @@ const AddUser = () => {
 	const submitHandler = (e) => {
 		e.preventDefault();
 		setSubmitted(true);
-		if (name === '' || lastname === '' || username === '' || email === '' || password === '' || confirmPassword === '') {
+		if (name === '' || lastname === '' || email === '' || password === '' || confirmPassword === '') {
 			toast.error("Please fill all fields");
 		} else
 		if (password !== confirmPassword) {
 			toast.error("Password and Confirm Password do not match");
 		} else {
-			dispatch(createUser(name, lastname, username, email, isAdmin, password, img));
-			clearForm();
+			dispatch(createUser(name, lastname, email, isAdmin, password, img));
+			// clearForm();
 		}
 	}
 
 	const clearForm = () => {
 		setName('');
 		setLastname('');
-		setUsername('');
 		setEmail('');
 		setIsAdmin(false);
 		setPassword('');
 		setConfirmPassword('');
 		setImg('');
-	}
-
-	const uploadFileHandler = async (e) => {
-		const file = e.target.files[0];
-		const formData = new FormData();
-		formData.append('img', file);
-		setUploading(true);
-
-		try {
-			const config = {
-				headers: {
-					'Content-Type': 'multipart/form-data'
-				}
-			}
-
-			const {data} = await axios.post('/api/upload', formData, config);
-			setImg(data);
-			setUploading(false);
-		} catch (error) {
-			console.error(error);
-			setUploading(false);
-		}
 	}
 
 	useEffect(() => {
@@ -120,14 +96,7 @@ const AddUser = () => {
 													</div>
 												</div>
 												<div className="row">
-													<div className="col-md-6">
-														<div className="form-group row">
-															<label className="col-sm-3 col-form-label">Username</label>
-															<div className="col-sm-9">
-																<input type="text" className="form-control" placeholder="Username" value={username} onChange={(e) => setUsername(e.target.value)} />
-															</div>
-														</div>
-													</div>
+													
 													<div className="col-md-6">
 														<div className="form-group row">
 															<label className="col-sm-3 col-form-label">Email</label>
@@ -178,14 +147,11 @@ const AddUser = () => {
 														<div className="form-group row">
 															<label className="col-sm-3 col-form-label">Image</label>
 															<div className="col-sm-9">
-															<FileBase64
-																type="file"
-																multiple={false}
-																onDone={({ base64 }) => setImg(...img,base64)}
-															/>
-																{/* <input type="text" className="form-control" placeholder="Image" value={img} onChange={(e) => setImg(e.target.value)} /> */}
-																<img className="activator" style={{ width: '100%', height: 100, width: 100 }} src={img} />
-													
+															<input type="file"  accept="image/jpeg" className={'form-control form-control-lg' + (submitted && !img ? ' is-invalid' : '')}	
+																	name="img"
+																	onChange={(e)=>	setImg(e.target.value)}
+																	value={img}
+																/>
 															</div>
 														</div>
 													</div>

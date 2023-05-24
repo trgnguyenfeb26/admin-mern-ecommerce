@@ -5,11 +5,7 @@ import Swal from 'sweetalert2';
 
 
 const Product = (props) => {
-<<<<<<< Updated upstream
-	let {_id, title,image,price,stock} = props.product;
-=======
 	let { _id, title, img, price, inStock } = props.product;
->>>>>>> Stashed changes
 	const dispatch = useDispatch();
 
 	const deletehandler = (id) => {
@@ -35,26 +31,6 @@ const Product = (props) => {
 }
 	return (
 		<>
-<<<<<<< Updated upstream
-		    <tr>
-              <td>{title}</td>
-              <td><img src={image} /></td>
-              <td>{price}</td>
-              <td>{stock}</td>
-              <td><Link
-	                to={`/product/edit/${_id}`}	                
-	              >
-	              	<i className="fa fa-edit"></i>
-	              </Link>
-	              <Link
-	                to="#"
-	                onClick={() => deletehandler(_id)}	                
-	              >
-	              	<i className="fa fa-trash"></i>
-	              </Link>
-	           </td>
-            </tr>
-=======
 			<tr>
 				<td>{title}</td>
 				<td><img src={img} /></td>
@@ -73,7 +49,6 @@ const Product = (props) => {
 					</Link>
 				</td>
 			</tr>
->>>>>>> Stashed changes
 		</>
 	)
 }

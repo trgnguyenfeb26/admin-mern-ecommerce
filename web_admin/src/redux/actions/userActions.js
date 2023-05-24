@@ -17,6 +17,9 @@ import {
   USER_UPDATE_REQUEST,
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
+  PORGOT_PASSWORD_REQUEST,
+  PORGOT_PASSWORD_SUCCESS,
+  PORGOT_PASSWORD_FAIL
 } from "../constants/UserConstants";
 import axios from "axios";
 import { toast } from "react-toastify";
@@ -58,16 +61,14 @@ export const Register = (name, email, password) => async (dispatch) => {
 };
 
 //Create User
-export const createUser = (name, lastname, username, email, isAdmin, password, img) => async (dispatch) => {
+export const createUser = (name, lastname, email, isAdmin, password, img) => async (dispatch) => {
 
   try {
     dispatch({ type: USER_REGISTER_REQUEST });
     console.log('tạo user');
     const { data } = await axios.post(`users/create`,
-      { name, lastname, username, email, isAdmin, password, img }
+      { name, lastname, email, isAdmin, password, img }
     );
-    console.log('tạo user xong', data.success);
-    console.log('tạo user xong', data.status);
     if (!data) {
 
       console.log(data.message);
@@ -121,7 +122,7 @@ export const updateUser = (reqData) => async (dispatch) => {
   try {
     dispatch({ type: USER_UPDATE_REQUEST });
     console.log('update user');
-    const { data } = await axios.put(`/users/${reqData._id}`,
+    const { data } = await axios.post(`/users/update/${reqData._id}`,
       reqData
     );
     if (!data) {
@@ -211,6 +212,34 @@ export const Login = (email, password) => async (dispatch) => {
   }
 };
 
+// Forgot Password
+export const forgotPass = (email) => async (dispatch) => {
+  try {
+    dispatch({ type: PORGOT_PASSWORD_REQUEST });
+
+    const { data } = await axios.post(
+      `auth/forgotpassword`,
+      { email }
+    );
+
+    if (!data.success) {
+      toast.error(data.message);
+      dispatch({
+        type: PORGOT_PASSWORD_FAIL,
+      });
+    } else {
+      toast.success(data.message);
+      dispatch({ type: PORGOT_PASSWORD_SUCCESS });
+    }
+
+  } catch (error) {
+    toast.error(error.response.data.message);
+    dispatch({
+      type: PORGOT_PASSWORD_FAIL,
+      payload: error.response.data.message,
+    });
+  }
+};
 // Logout
 export const logout = () => (dispatch) => {
   localStorage.removeItem("userInfo");

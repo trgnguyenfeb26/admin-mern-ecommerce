@@ -11,10 +11,6 @@ import { CSVLink } from "react-csv";
 import axios from 'axios';
 import './order.css';
 
-const headers = [
-  { label: "Name", key: "shippingAddress.customer_name"},
-  { label: "Email", key: "user_info[0].email"}
-];
 
 const Products = () => {
 	const dispatch = useDispatch();
@@ -28,7 +24,7 @@ const Products = () => {
 	console.log(orderList); 	
 
   	let pageNum = 0;
-  	let ordersPerPage = 10;
+  	let ordersPerPage = 5;
   	const handlePageClick = (data) => {
   		pageNum = data.selected;
   		setCurrentPage(pageNum);	
@@ -56,10 +52,26 @@ const Products = () => {
   	}
 
   	const getCsvOrders = async () => {
-  		const responseData = await axios.get(`/orders/all`);
-    	const data = responseData.data;
-    	setCsvData(data.data);
-    	myRefBtn.current.link.click();
+  		const responseData = await axios.get(`/orders/all/all`);
+		const data = responseData.data;	
+		
+		let csvData = [];
+		data.map((order) => {
+			let csvOrder = {};
+			csvOrder['Name'] = order.userId.name;
+			csvOrder['Email'] = order.userId.email;
+			csvOrder['Total'] = order.amount;
+			csvOrder['Date'] = order.createdAt;
+			csvOrder['Status'] = order.status;
+			csvData.push(csvOrder);
+		})
+
+		setCsvData(csvData);
+		myRefBtn.current.link.click();
+
+
+
+    	
   	}
 
 
@@ -92,8 +104,7 @@ const Products = () => {
 	                                    <div className="col-sm-1">
 	                                    	<i className="fa fa-download download-csv" onClick={getCsvOrders} title="Download CSV"/>
 	                                    	<CSVLink 
-	                                    		data={csvData} 
-	                                    		headers={headers}
+	                                    		data={csvData}
       											className="d-none"
       											ref={myRefBtn}
       											filename={"Order-Data.csv"}

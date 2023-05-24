@@ -24,7 +24,7 @@ export const listProducts = (pageNum,productsPerPage,sortBy,searchText) => async
   try {
     dispatch({ type: PRODUCT_LIST_REQUEST });
 
-    const responseData = await axios.get(`/products?page=${pageNum}&limit=${productsPerPage}&sortBy=${sortBy}&searchText=${searchText}`);
+    const responseData = await axios.get(`/products/admin?page=${pageNum}&limit=${productsPerPage}&sortBy=${sortBy}&searchText=${searchText}`);
     const data = responseData.data;
     data['sortBy'] = sortBy;
     data['searchText'] = searchText;
@@ -57,7 +57,8 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
     const response = await axios.delete(`/products/${id}`);
 
     const responseData = response.data;
-    if (responseData.status !== 200) {
+
+    if (!responseData.success) {
         toast.error(responseData.message, ToastObjects);  
       }else{
         toast.success(responseData.message, ToastObjects);  
@@ -82,19 +83,16 @@ export const deleteProduct = (id) => async (dispatch, getState) => {
 };
 
 // Create Product
-export const createProduct = (reqData) => async (dispatch, getState) => {
-    
+export const createProduct = (reqData,user) => async (dispatch, getState) => {
+  const axiosJWT = axios.create()
+
     try {
       dispatch({ type: PRODUCT_CREATE_REQUEST });
 
-<<<<<<< Updated upstream
-      const response = await axios.post(
-        `products/`,
+      const response = await axiosJWT.post(
+        `/products`,
         reqData
       );
-=======
-      const response = await axiosJWT.post(`/products`);
->>>>>>> Stashed changes
 
       const responseData = response.data;
 
@@ -150,6 +148,7 @@ export const updateProduct = (reqData) => async (dispatch, getState) => {
 
   try {
     dispatch({ type: PRODUCT_UPDATE_REQUEST });
+    let _id = 0;
     const { data } = await axios.put(
       `/products/${reqData._id}`,
       reqData      

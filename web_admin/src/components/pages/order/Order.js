@@ -7,10 +7,16 @@ import { deleteOrder } from "../../../redux/actions/OrderActions";
 
 
 const Order = (props) => {
-	let {_id, title,image,totalPrice,isPaid, orderItems,createdAt,isDelivered, shippingAddress:{customer_name}, user_info:[{email}]} = props.order;
+	let { _id,userId, email, amount, isPaid, createdAt, status } = props.order;
 
 	const orderDate = new Date(createdAt);
-	const localOrderDate = orderDate.toLocaleString('en-US');
+	// DD/MM/YYYY 
+	const localOrderDate = orderDate.toLocaleDateString('en-GB', {
+				  day: 'numeric', month: 'numeric', year: 'numeric'
+				}).replace(/ /g, '-');
+
+
+
 	
 	const dispatch = useDispatch();
 
@@ -22,12 +28,12 @@ const Order = (props) => {
 	return(
 		<>
 		    <tr>
-              <td>{customer_name}</td>
-              <td>{email}</td>
-              <td>$ {totalPrice/100}</td>
+              <td>{userId.name}</td>
+              <td>{userId.email}</td>
+              <td>$ {amount}</td>
               <td>{isPaid ? "Yes" : "No" }</td>
               <td>{localOrderDate}</td>
-              <td>{isDelivered ? "Delivered" : "Not Delivered"}</td>
+              <td>{status}</td>
               <td><Link
 	                to={`/order/edit/${_id}`}
 	                className="text-success"

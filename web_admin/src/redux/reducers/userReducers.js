@@ -19,6 +19,14 @@ import {
   USER_UPDATE_SUCCESS,
   USER_UPDATE_FAIL,
   USER_UPDATE_RESET,
+  PORGOT_PASSWORD_REQUEST,
+  PORGOT_PASSWORD_SUCCESS,
+  PORGOT_PASSWORD_FAIL,
+  PORGOT_PASSWORD_RESET,
+  RESET_PASSWORD_REQUEST,
+  RESET_PASSWORD_SUCCESS,
+  RESET_PASSWORD_FAIL,
+  RESET_PASSWORD_RESET
 } from "../constants/UserConstants";
 
 // Register
@@ -150,3 +158,34 @@ export const userDetailsReducer = (state = { user: {} }, action) => {
   }
 }
 
+// Forgot Password
+export const forgotPasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case PORGOT_PASSWORD_REQUEST:
+      return { loading: true };
+    case PORGOT_PASSWORD_SUCCESS:
+      return { loading: false, success: true };
+    case PORGOT_PASSWORD_FAIL:
+      return { loading: false, error: action.payload };
+    case PORGOT_PASSWORD_RESET:
+      return {};
+    default:
+      return state;
+  }
+}
+
+// Reset Password
+export const resetPasswordReducer = (state = {}, action) => {
+  switch (action.type) {
+    case RESET_PASSWORD_REQUEST:
+      return { loading: true };
+    case RESET_PASSWORD_SUCCESS:
+      return { loading: false, success: true };
+    case RESET_PASSWORD_FAIL:
+      return { loading: false, error: action.payload };
+    case RESET_PASSWORD_RESET:
+      return {};
+    default:
+      return state;
+  }
+}
