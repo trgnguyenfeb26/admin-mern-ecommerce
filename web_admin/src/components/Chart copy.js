@@ -6,14 +6,14 @@ const res = await axios.get('http://localhost:5001/api/products/admin/all/Produc
 console.log('produc', res.data);
 
 // caculate product by month
-const productByMonth = [];
-for (let i = 1; i <= 12; i++) {
+const productByMonth = [0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0, 0];
+
   const data = res.data;
   data.data.map((product) => {
     let month = new Date(product.createdAt).getMonth();
     productByMonth[month] += 1;
   })
-}
+
 console.log('productByMonth', productByMonth);
 const LineChartC = () => {
   useEffect(() => {

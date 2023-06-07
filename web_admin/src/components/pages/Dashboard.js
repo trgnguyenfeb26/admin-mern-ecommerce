@@ -7,6 +7,7 @@ import LineChartC from '../Chart copy';
 
 const totalUser = await axios.get('http://localhost:5001/api/users/totalUsers');
 const totalProducts = await axios.get('http://localhost:5001/api/products/totalProducts');
+//const totalOrders = await axios.get('http://localhost:5001/api/orders/totalAllOrders');
 
 const Dashboard = () => {
   return (
